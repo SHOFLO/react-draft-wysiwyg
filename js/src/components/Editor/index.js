@@ -88,8 +88,6 @@ export default class WysiwygEditor extends Component {
     const toolbar = mergeRecursive(defaultToolbar, props.toolbar);
     const colorsArray = Object.keys(toolbar.colorPicker.colors);
 
-    console.log(colorsArray)
-
     setFontFamilies(toolbar.fontFamily && toolbar.fontFamily.options);
     setFontSizes(toolbar.fontSize && toolbar.fontSize.options);
     setColors(toolbar.colorPicker && colorsArray);
@@ -424,8 +422,6 @@ export default class WysiwygEditor extends Component {
       onChange: this.onControlChange,
       customStyleMap
     }
-
-    console.log(customStyleMap);
 
     return (
       <div
