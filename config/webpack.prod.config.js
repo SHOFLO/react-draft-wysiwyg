@@ -25,11 +25,11 @@ module.exports = {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false,
-      },
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compressor: {
+    //     warnings: false,
+    //   },
+    // }),
     new ExtractTextPlugin('react-draft-wysiwyg.css'),
     new webpack.LoaderOptionsPlugin({
       options: {

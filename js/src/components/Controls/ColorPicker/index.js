@@ -130,7 +130,7 @@ export default class ColorPicker extends Component {
         </span>
         <span className="rdw-colorpicker-modal-options">
           <ColorPickerModalOptions
-            colors={colors} 
+            colors={colors}
             currentSelectedColor={currentSelectedColor}
             currentStyle={currentStyle}
             onClick={this.toggleColor}
