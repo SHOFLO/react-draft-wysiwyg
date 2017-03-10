@@ -243,7 +243,6 @@ export default class WysiwygEditor extends Component {
     let contentState = editorState.getCurrentContent();
 
     let lastBlock = contentState.getLastBlock();
-
     let lastBlockKey = lastBlock.getKey();
 
     let lastBlockCharacterMetaData = lastBlock.getCharacterList().last();
