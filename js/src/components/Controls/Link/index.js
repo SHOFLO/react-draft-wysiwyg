@@ -59,12 +59,10 @@ export default class Link extends Component {
 
   setLinkTextReference: Function = (ref: Object): void => {
     this.linkText = ref;
-    if (this.state.linkTitle && ref) this.linkText.focus();
   };
 
   setLinkTitleReference: Function = (ref: Object): void => {
     this.linkTitle = ref;
-    if (!this.state.linkTitle && ref) this.linkTitle.focus();
   };
 
   removeLink: Function = (): void => {
