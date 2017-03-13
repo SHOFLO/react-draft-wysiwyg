@@ -120,6 +120,7 @@ export default class WysiwygEditor extends Component {
 
   componentDidMount(): void {
     this.modalHandler.init(this.wrapperId);
+    this.focusEditor();
   }
   // todo: change decorators depending on properties recceived in componentWillReceiveProps.
 
@@ -162,14 +163,12 @@ export default class WysiwygEditor extends Component {
   }
 
   onEditorBlur: Function = (): void => {
-
     this.setState({
       editorFocused: false,
     });
   };
 
   onEditorFocus: Function = (event): void => {
-
     const { onFocus } = this.props;
     this.setState({
       editorFocused: true,
@@ -239,7 +238,44 @@ export default class WysiwygEditor extends Component {
 
   };
 
+  removeEntityFromWhiteSpace: Function = (editorState: Object): void => {
+
+    let contentState = editorState.getCurrentContent();
+
+    let lastBlock = contentState.getLastBlock();
+    let lastBlockKey = lastBlock.getKey();
+
+    let lastBlockCharacterMetaData = lastBlock.getCharacterList().last();
+    let lastBlockText = lastBlock.getText();
+    let lastBlockTextCharacter = lastBlockText[lastBlockText.length - 1];
+
+
+    if (lastBlockCharacterMetaData && 
+        lastBlockCharacterMetaData.get('entity') && 
+        lastBlockTextCharacter === ' ') {
+
+      contentState = contentState.updateIn(['blockMap', lastBlockKey, 'characterList'], (characters) => {
+        return characters.setIn([characters.size - 1, 'entity'], null);
+      });
+
+      return EditorState.push(editorState, contentState, 'change-block-data');
+
+    } else {
+
+      return editorState;
+
+    }
+
+  };
+
   onChange: Function = (editorState: Object): void => {
+
+    /**
+     * When white space is added it should not have an entity
+     * mapped to it. For instance, this allows us to break a link
+     * chain by adding a space after it.
+     */
+    editorState = this.removeEntityFromWhiteSpace(editorState);
 
     const { readOnly, onEditorStateChange } = this.props;
     if (!readOnly) {
@@ -420,6 +456,7 @@ export default class WysiwygEditor extends Component {
       modalHandler: this.modalHandler,
       editorState,
       onChange: this.onControlChange,
+      onBlur: this.focusEditor,
       customStyleMap
     }
 

@@ -44,9 +44,10 @@ export default class Link extends Component {
       this.props.editorState !== properties.editorState) {
       newState.currentEntity = getSelectionEntity(properties.editorState);
     }
+
     this.setState(newState);
   }
-
+  
   componentWillUnmount(): void {
     const { modalHandler } = this.props;
     modalHandler.deregisterCallBack(this.showHideModal);
@@ -75,6 +76,7 @@ export default class Link extends Component {
       selection = selection.merge({
         anchorOffset: entityRange.start,
         focusOffset: entityRange.end,
+        isBackward: false
       });
 
       onChange(RichUtils.toggleLink(editorState, selection, null));
@@ -91,7 +93,7 @@ export default class Link extends Component {
       const entityRange = getEntityRange(editorState, currentEntity);
       selection = selection.merge({
         anchorOffset: entityRange.start,
-        focusOffset: entityRange.end,
+        focusOffset: entityRange.end
       });
     }
 
@@ -121,6 +123,7 @@ export default class Link extends Component {
     selection = newEditorState.getSelection().merge({
       anchorOffset: selection.get('anchorOffset') + linkTitle.length,
       focusOffset: selection.get('anchorOffset') + linkTitle.length,
+      isBackward: false
     });
     newEditorState = EditorState.acceptSelection(newEditorState, selection);
     contentState = Modifier.insertText(
@@ -151,6 +154,9 @@ export default class Link extends Component {
   };
 
   hideLinkModal: Function = (): void => {
+    const { onBlur } = this.props; 
+    onBlur();   
+
     this.setState({
       showModal: false,
     });
@@ -161,6 +167,8 @@ export default class Link extends Component {
     const newState = {};
 
     newState.showModal = this.signalShowModal;
+
+
     if (newState.showModal) {
       const { editorState } = this.props;
       const { currentEntity } = this.state;
@@ -176,6 +184,9 @@ export default class Link extends Component {
       } else {
         newState.linkTitle = getSelectionText(editorState);
       }
+    } else {
+      const { onBlur } = this.props; 
+      onBlur();
     }
     
     this.setState(newState);
@@ -190,11 +201,15 @@ export default class Link extends Component {
 
   renderAddLinkModal() {
     const { config: { popupClassName } } = this.props;
-    const { linkTitle, linkTarget } = this.state;
+    const { linkTitle, linkTarget, currentEntity } = this.state;
+
     return (
       <div
         className={classNames('rdw-link-modal', popupClassName)}
         onClick={this.stopPropagation}
+        onKeyDown={(e) => {
+          if (e.keyCode === 13) this.addLink()
+        }}
       >
         <span className="rdw-link-modal-label">Link Title</span>
         <input
@@ -218,7 +233,7 @@ export default class Link extends Component {
             onClick={this.addLink}
             disabled={!linkTarget || !linkTitle}
           >
-            Add
+            {currentEntity ? 'Save' : 'Add'}
           </button>
           <button
             className="rdw-link-modal-btn"
