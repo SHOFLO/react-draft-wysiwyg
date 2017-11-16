@@ -250,8 +250,8 @@ export default class WysiwygEditor extends Component {
     let lastBlockTextCharacter = lastBlockText[lastBlockText.length - 1];
 
 
-    if (lastBlockCharacterMetaData && 
-        lastBlockCharacterMetaData.get('entity') && 
+    if (lastBlockCharacterMetaData &&
+        lastBlockCharacterMetaData.get('entity') &&
         lastBlockTextCharacter === ' ') {
 
       contentState = contentState.updateIn(['blockMap', lastBlockKey, 'characterList'], (characters) => {
@@ -397,7 +397,8 @@ export default class WysiwygEditor extends Component {
 
   focusEditor: Function = (): void => {
     setTimeout(() => {
-      this.editor.focus();
+      if (this.editor) this.editor.focus();
+
     });
   };
 
